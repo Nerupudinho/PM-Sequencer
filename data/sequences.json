@@ -1,0 +1,183 @@
+{
+  "shipping-words-not-decisions": {
+    "problemId": "shipping-words-not-decisions",
+    "title": "Think clearly before you ship anything",
+    "tagline": "Next 60 minutes: think in decisions, not sentences.",
+    "totalMinutes": 60,
+    "videos": [
+      {
+        "videoId": "rwmR7m5rvqw",
+        "title": "How this PM uses AI for PRDs, JIRA tickets, and replying to coworkers | Dennis Yang (Chime)",
+        "role": "opener",
+        "watchFor": "Notice how they use AI to shape thinking before writing.",
+        "durationMinutes": 18
+      },
+      {
+        "videoId": "QwtEajzgjWY",
+        "title": "Mastering ChatGPT: Advanced techniques for workplace communication and productivity | Hiten Shah",
+        "role": "compressor",
+        "watchFor": "Focus on how they bound vague asks into sharp prompts.",
+        "durationMinutes": 16
+      },
+      {
+        "videoId": "OCw145kwwLs",
+        "title": "How this former NYT columnist uses ChatGPT to brainstorm, do research, and find the perfect metaphor",
+        "role": "compressor",
+        "watchFor": "See how research becomes structured thinking.",
+        "durationMinutes": 12
+      },
+      {
+        "videoId": "hzPKb8bDvdY",
+        "title": "Gamma's head of design on using AI to synthesize feedback and generate on-brand imagery | Zach Leach",
+        "role": "lever",
+        "watchFor": "Look for where they turn feedback into actionable decisions.",
+        "durationMinutes": 14
+      }
+    ]
+  },
+  "calendar-full-impact-isnt": {
+    "problemId": "calendar-full-impact-isnt",
+    "title": "Turn meetings into momentum",
+    "tagline": "Next 60 minutes: transform notes into action.",
+    "totalMinutes": 58,
+    "videos": [
+      {
+        "videoId": "shqv90oAIkM",
+        "title": "How to turn meeting notes into prototypes that your sales team can immediately demo to customers",
+        "role": "opener",
+        "watchFor": "Notice how meeting transcripts become interactive prototypes.",
+        "durationMinutes": 20
+      },
+      {
+        "videoId": "QwtEajzgjWY",
+        "title": "Mastering ChatGPT: Advanced techniques for workplace communication and productivity | Hiten Shah",
+        "role": "compressor",
+        "watchFor": "Focus on how AI organizes communications to reduce cognitive load.",
+        "durationMinutes": 15
+      },
+      {
+        "videoId": "xDMkkOC-EhI",
+        "title": "How custom GPTs can make you a better manager | Hilary Gridley (Head of Core Product at Whoop)",
+        "role": "lever",
+        "watchFor": "Look for where they automate task delegation and follow-through.",
+        "durationMinutes": 12
+      },
+      {
+        "videoId": "fFqZm_dJXdw",
+        "title": "\"PMs who use AI will replace those who don't\": Google's AI product lead on the new PM toolkit",
+        "role": "lever",
+        "watchFor": "See the complete AI workflow that accelerates PM work.",
+        "durationMinutes": 11
+      }
+    ]
+  },
+  "dont-know-where-to-trust-ai": {
+    "problemId": "dont-know-where-to-trust-ai",
+    "title": "Build confidence in AI",
+    "tagline": "Next 60 minutes: know where AI actually helps.",
+    "totalMinutes": 62,
+    "videos": [
+      {
+        "videoId": "6w0i2Wp0knM",
+        "title": "Gemini 3 vs. Claude Opus 4.5 vs. GPT-5.1 Codex: Which AI model is the best designer?",
+        "role": "opener",
+        "watchFor": "Evaluate models on visual design quality, UX, and SEO capabilities.",
+        "durationMinutes": 25
+      },
+      {
+        "videoId": "NCvW28UY7tk",
+        "title": "An exclusive inside look at GPT-5",
+        "role": "compressor",
+        "watchFor": "See what cutting-edge models can (and can't) do.",
+        "durationMinutes": 18
+      },
+      {
+        "videoId": "9Q9Yrj2RTkg",
+        "title": "How Amplitude built an internal AI tool that the whole company's obsessed with (and how you can too)",
+        "role": "lever",
+        "watchFor": "Notice how custom agents build employee trust.",
+        "durationMinutes": 12
+      },
+      {
+        "videoId": "HtzkfjEH-GU",
+        "title": "Successfully coding with AI in large enterprises: Centralized rules, workflows for tech debt, & more",
+        "role": "lever",
+        "watchFor": "Focus on centralized workflows that boost confidence.",
+        "durationMinutes": 7
+      }
+    ]
+  },
+  "move-faster-not-sloppy": {
+    "problemId": "move-faster-not-sloppy",
+    "title": "Speed with credibility",
+    "tagline": "Next 60 minutes: ship faster without looking sloppy.",
+    "totalMinutes": 65,
+    "videos": [
+      {
+        "videoId": "k0gmTOm1eus",
+        "title": "A complete beginner's guide to coding with AI: From PRD to generating your very first lines of code",
+        "role": "opener",
+        "watchFor": "See how to move quickly from idea to code with credibility.",
+        "durationMinutes": 18
+      },
+      {
+        "videoId": "_yQMGHHl49g",
+        "title": "The secret to better AI prototypes: Why Tinder's CPO starts with JSON, not design | Ravi Mehta",
+        "role": "compressor",
+        "watchFor": "Notice the structured, data-driven approach to prototyping.",
+        "durationMinutes": 15
+      },
+      {
+        "videoId": "zQkFJNj-2lw",
+        "title": "How to use Cursor for interactive prototypes, sound design, and data visualization",
+        "role": "compressor",
+        "watchFor": "See how to create interactive prototypes quickly.",
+        "durationMinutes": 14
+      },
+      {
+        "videoId": "I62dr0TwyZM",
+        "title": "How to build prototypes that actually look like your product | Colin Matthews",
+        "role": "lever",
+        "watchFor": "Look for workflows that maintain high visual credibility.",
+        "durationMinutes": 12
+      },
+      {
+        "videoId": "A204lKJryoQ",
+        "title": "How this PM streamlines 60k-page FDA submissions with Claude, Streamlit, and clever AI workflows",
+        "role": "lever",
+        "watchFor": "See how AI enables speed without compromising quality.",
+        "durationMinutes": 6
+      }
+    ]
+  },
+  "too-much-manual-work": {
+    "problemId": "too-much-manual-work",
+    "title": "Automate what shouldn't exist",
+    "tagline": "Next 45 minutes: eliminate the work that shouldn't be yours.",
+    "totalMinutes": 45,
+    "videos": [
+      {
+        "videoId": "8P7v1lgl-1s",
+        "title": "How to digest 36 weekly podcasts without spending 36 hours listening | Tomasz Tunguz",
+        "role": "opener",
+        "watchFor": "See how to automate consumption and analysis of large content volumes.",
+        "durationMinutes": 18
+      },
+      {
+        "videoId": "Qj-67aJmEDA",
+        "title": "\"I'm incapable of doing my job without AI\": How this PM uses Claude + ChatGPT as his second brain",
+        "role": "compressor",
+        "watchFor": "Notice custom GPT workflows that automate context switching and analysis.",
+        "durationMinutes": 15
+      },
+      {
+        "videoId": "MZZCW179nKM",
+        "title": "Claude Skills explained: How to create reusable AI workflows",
+        "role": "lever",
+        "watchFor": "Learn how to build reusable workflows for recurring tasks.",
+        "durationMinutes": 12
+      }
+    ]
+  }
+}
+

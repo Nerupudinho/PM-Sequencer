@@ -1,0 +1,32 @@
+[
+  {
+    "id": "shipping-words-not-decisions",
+    "title": "How do good PMs actually use AI while writing PRDs or docs?",
+    "discomfort": "I use AI a bit, but I'm not sure I'm using it in the right way.",
+    "promise": "See how PMs turn messy thinking into clear decisions."
+  },
+  {
+    "id": "calendar-full-impact-isnt",
+    "title": "How do I make meetings lead to decisions, not just notes?",
+    "discomfort": "We talk a lot, align a lot… and still nothing really moves.",
+    "promise": "Learn how teams turn conversations into momentum."
+  },
+  {
+    "id": "dont-know-where-to-trust-ai",
+    "title": "Where should I trust AI — and where should I not?",
+    "discomfort": "Every tool claims to help. I don't know what to rely on.",
+    "promise": "Build a clear mental model for what to delegate to AI."
+  },
+  {
+    "id": "move-faster-not-sloppy",
+    "title": "How can I move faster without my work looking half-baked?",
+    "discomfort": "Speed matters, but credibility matters more.",
+    "promise": "See how PMs prototype and ship faster without cutting corners."
+  },
+  {
+    "id": "too-much-manual-work",
+    "title": "What parts of my job should already be automated?",
+    "discomfort": "I feel like I'm doing the same things again and again.",
+    "promise": "Learn how PMs offload repeat work and keep leverage."
+  }
+]

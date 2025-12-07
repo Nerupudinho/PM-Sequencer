@@ -1,65 +1,109 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import problemsData from "@/data/problems.json";
+import sequencesData from "@/data/sequences.json";
+import { ProblemPicker } from "@/components/ProblemPicker";
+import { SequenceIntro } from "@/components/SequenceIntro";
+import { SequencePlayer } from "@/components/SequencePlayer";
+
+type Problem = {
+  id: string;
+  title: string;
+  discomfort: string;
+  promise: string;
+};
+
+type Sequence = {
+  problemId: string;
+  title: string;
+  tagline: string;
+  totalMinutes: number;
+  videos: Array<{
+    videoId: string;
+    title: string;
+    role: string;
+    watchFor: string;
+    durationMinutes: number;
+  }>;
+};
 
 export default function Home() {
+  const [stage, setStage] = useState<"pick" | "intro" | "play">("pick");
+  const [selectedProblemId, setSelectedProblemId] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const problems = problemsData as Problem[];
+  const sequences = sequencesData as Record<string, Sequence>;
+
+  const handleSelectProblem = (problemId: string) => {
+    setSelectedProblemId(problemId);
+    // Check if we have a sequence for this problem
+    if (sequences[problemId]) {
+      setStage("intro");
+    } else {
+      // Later: show "coming soon"
+      alert("This path is coming soon. For now, try one of the available problems.");
+    }
+  };
+
+  const handleCommitSequence = () => {
+    setStage("play");
+    setCurrentIndex(0);
+  };
+
+  const handleNextVideo = () => {
+    if (selectedProblemId && sequences[selectedProblemId]) {
+      const sequence = sequences[selectedProblemId];
+      if (currentIndex < sequence.videos.length - 1) {
+        setCurrentIndex((i) => i + 1);
+      } else {
+        // Finished sequence
+        alert("You finished the sequence — nice work! 🎉");
+        // Reset to beginning
+        setStage("pick");
+        setSelectedProblemId(null);
+        setCurrentIndex(0);
+      }
+    }
+  };
+
+  if (stage === "pick") {
+    return (
+      <ProblemPicker
+        problems={problems}
+        onSelectProblem={handleSelectProblem}
+      />
+    );
+  }
+
+  if (stage === "intro" && selectedProblemId && sequences[selectedProblemId]) {
+    const problem = problems.find((p) => p.id === selectedProblemId);
+    const sequence = sequences[selectedProblemId];
+    
+    if (!problem) {
+      return <div>Problem not found</div>;
+    }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      <SequenceIntro
+        problem={problem}
+        sequence={sequence}
+        onCommit={handleCommitSequence}
+      />
+    );
+  }
+
+  if (stage === "play" && selectedProblemId && sequences[selectedProblemId]) {
+    const sequence = sequences[selectedProblemId];
+    return (
+      <SequencePlayer
+        sequence={sequence}
+        currentIndex={currentIndex}
+        onNext={handleNextVideo}
+      />
+    );
+  }
+
+  return null;
 }
