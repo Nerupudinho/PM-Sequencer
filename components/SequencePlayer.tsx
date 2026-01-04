@@ -1,3 +1,8 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+
 type Video = {
   videoId: string;
   title: string;
@@ -18,19 +23,86 @@ export function SequencePlayer({
   sequence,
   currentIndex,
   onNext,
+  onBackToSelection,
 }: {
   sequence: Sequence;
   currentIndex: number;
   onNext: () => void;
+  onBackToSelection?: () => void;
 }) {
   const current = sequence.videos[currentIndex];
   const isLast = currentIndex === sequence.videos.length - 1;
   const progress = ((currentIndex + 1) / sequence.videos.length) * 100;
+  const containerRef = useRef<HTMLElement>(null);
+  const prevIndexRef = useRef(currentIndex);
+
+  // Initial entrance animation
+  useEffect(() => {
+    if (!containerRef.current || prevIndexRef.current !== 0) return;
+
+    const section = containerRef.current.querySelector('section');
+    if (!section) return;
+
+    gsap.fromTo(
+      section,
+      {
+        opacity: 0,
+        y: 50,
+        scale: 0.95
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        ease: 'power3.out'
+      }
+    );
+  }, []);
+
+  // Animate video transitions
+  useEffect(() => {
+    if (prevIndexRef.current === currentIndex) return;
+    prevIndexRef.current = currentIndex;
+
+    if (!containerRef.current) return;
+    const videoContainer = containerRef.current.querySelector('.aspect-video');
+    const infoCard = containerRef.current.querySelector('.border-2.border-slate-200');
+    
+    if (videoContainer) {
+      gsap.fromTo(
+        videoContainer,
+        { opacity: 0, scale: 0.95 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' }
+      );
+    }
+
+    if (infoCard) {
+      gsap.fromTo(
+        infoCard,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5, delay: 0.2, ease: 'power2.out' }
+      );
+    }
+  }, [currentIndex]);
 
   const embedUrl = `https://www.youtube.com/embed/${current.videoId}?rel=0&modestbranding=1`;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col items-center px-4 py-4 sm:py-8">
+    <main ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col items-center px-4 py-4 sm:py-8 relative">
+      {/* Back to Selection Link */}
+      {onBackToSelection && (
+        <button 
+          onClick={onBackToSelection} 
+          className="absolute top-8 left-8 text-sm text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Choose a different problem
+        </button>
+      )}
+      
       <section className="w-full max-w-4xl space-y-4 sm:space-y-6">
         {/* Progress bar */}
         <div className="space-y-2">

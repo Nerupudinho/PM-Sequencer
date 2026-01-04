@@ -1,3 +1,8 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+
 type Problem = {
   id: string;
   title: string;
@@ -25,15 +30,56 @@ export function SequenceIntro({
   problem,
   sequence,
   onCommit,
+  onBackToSelection,
 }: {
   problem: Problem;
   sequence: Sequence;
   onCommit: () => void;
+  onBackToSelection?: () => void;
 }) {
   const totalMinutes = sequence.totalMinutes;
+  const containerRef = useRef<HTMLElement>(null);
+
+  // Entrance animation
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const section = containerRef.current.querySelector('section');
+    if (!section) return;
+
+    // Fade in and slide up animation
+    gsap.fromTo(
+      section,
+      {
+        opacity: 0,
+        y: 50,
+        scale: 0.95
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        ease: 'power3.out'
+      }
+    );
+  }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col items-center justify-center px-4 py-8 sm:py-12">
+    <main ref={containerRef} className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col items-center justify-center px-4 py-8 sm:py-12 relative">
+      {/* Back to Selection Link */}
+      {onBackToSelection && (
+        <button 
+          onClick={onBackToSelection} 
+          className="absolute top-8 left-8 text-sm text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Choose a different problem
+        </button>
+      )}
+      
       <section className="max-w-2xl w-full space-y-4 sm:space-y-6">
         <div className="space-y-2 sm:space-y-3">
           <p className="text-xs uppercase tracking-wider text-slate-500 font-medium">
