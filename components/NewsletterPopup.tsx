@@ -220,25 +220,14 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       console.log('[NewsletterPopup] Starting GSAP animation');
       fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:212',message:'Starting GSAP animation',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
 
-      // Set initial state
+      // Set initial state - only animate scale and y, not opacity (CSS handles opacity)
       gsap.set(popup, {
-        opacity: 0,
         scale: 0.9,
         y: 20,
       });
-      gsap.set(overlay, {
-        opacity: 0,
-      });
 
-      // Animate in
-      gsap.to(overlay, {
-        opacity: 1,
-        duration: 0.3,
-        ease: 'power2.out',
-      });
-
+      // Animate in - opacity is handled by CSS, GSAP only animates transform
       gsap.to(popup, {
-        opacity: 1,
         scale: 1,
         y: 0,
         duration: 0.5,
@@ -272,7 +261,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       {/* Overlay - softer opacity */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 opacity-100"
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50"
         style={{ opacity: 1 }}
         onClick={(e) => {
           console.log('[NewsletterPopup] Overlay clicked');
@@ -285,7 +274,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       {/* Popup */}
       <div
         ref={popupRef}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none opacity-100"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
         style={{ opacity: 1 }}
       >
         <div
