@@ -20,22 +20,40 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const hasScrolledRef = useRef(false);
 
+  // #region agent log - Component mount
+  useEffect(() => {
+    console.log('[NewsletterPopup] Component mounted');
+    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:14',message:'Component mounted',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+  }, []);
+  // #endregion
+
   // Check if popup was previously dismissed
   useEffect(() => {
+    // #region agent log - localStorage check
     try {
       const dismissed = localStorage.getItem(POPUP_DISMISSED_KEY);
+      console.log('[NewsletterPopup] localStorage check:', { dismissed, key: POPUP_DISMISSED_KEY });
+      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:26',message:'localStorage check',data:{dismissed,key:POPUP_DISMISSED_KEY},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
       if (dismissed === 'true') {
+        console.log('[NewsletterPopup] Popup was previously dismissed, setting isDismissed=true');
+        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:28',message:'Popup dismissed in localStorage',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
         setIsDismissed(true);
         return;
       }
     } catch (error) {
       // localStorage not available (private browsing, etc.)
       console.warn('localStorage not available:', error);
+      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:32',message:'localStorage error',data:{error:error instanceof Error ? error.message : String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
     }
+    // #endregion
 
     // Exit intent detection
     const handleMouseLeave = (e: MouseEvent) => {
+      console.log('[NewsletterPopup] Mouse leave event:', { clientY: e.clientY, isDismissed, isVisible });
+      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:37',message:'Mouse leave event',data:{clientY:e.clientY,isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
       if (e.clientY <= 0 && !isDismissed && !isVisible) {
+        console.log('[NewsletterPopup] Exit intent detected, setting isVisible=true');
+        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:39',message:'Exit intent triggered',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
         setIsVisible(true);
       }
     };
@@ -47,15 +65,25 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       const windowHeight = window.innerHeight;
       const scrollY = window.scrollY;
       const scrollPercent = scrollHeight > windowHeight ? scrollY / (scrollHeight - windowHeight) : 0;
+      console.log('[NewsletterPopup] Scroll event:', { scrollPercent, threshold: SCROLL_THRESHOLD, isDismissed, isVisible });
+      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:44',message:'Scroll event',data:{scrollPercent,threshold:SCROLL_THRESHOLD,isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
       if (scrollPercent >= SCROLL_THRESHOLD && !isDismissed && !isVisible) {
+        console.log('[NewsletterPopup] Scroll threshold reached, setting isVisible=true');
+        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:50',message:'Scroll threshold triggered',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
         hasScrolledRef.current = true;
         setIsVisible(true);
       }
     };
 
     // Time-based trigger (fallback)
+    console.log('[NewsletterPopup] Setting timer for', POPUP_DELAY_MS, 'ms');
+    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:56',message:'Timer set',data:{delayMs:POPUP_DELAY_MS,isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
     const timer = setTimeout(() => {
+      console.log('[NewsletterPopup] Timer fired:', { isDismissed, isVisible });
+      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:57',message:'Timer fired',data:{isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
       if (!isDismissed && !isVisible) {
+        console.log('[NewsletterPopup] Timer triggered, setting isVisible=true');
+        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:59',message:'Timer triggered',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
         setIsVisible(true);
       }
     }, POPUP_DELAY_MS);
@@ -192,7 +220,17 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
   }, [isVisible]);
 
 
-  if (isDismissed || !isVisible) return null;
+  // #region agent log - Render check
+  useEffect(() => {
+    console.log('[NewsletterPopup] Render check:', { isDismissed, isVisible, willRender: !(isDismissed || !isVisible) });
+    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:195',message:'Render check',data:{isDismissed,isVisible,willRender:!(isDismissed || !isVisible)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+  }, [isDismissed, isVisible]);
+  // #endregion
+
+  if (isDismissed || !isVisible) {
+    console.log('[NewsletterPopup] Returning null:', { isDismissed, isVisible });
+    return null;
+  }
 
   return (
     <>
