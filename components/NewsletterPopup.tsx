@@ -3,6 +3,29 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 
+// Debug logging helper - only logs in development
+const DEBUG_ENABLED = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const DEBUG_ENDPOINT = 'http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22';
+
+const debugLog = (location: string, message: string, data: any, hypothesisId: string) => {
+  if (!DEBUG_ENABLED) return;
+  
+  console.log(`[NewsletterPopup] ${message}`, data);
+  fetch(DEBUG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location,
+      message,
+      data,
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId
+    })
+  }).catch(() => {}); // Silently fail in production
+};
+
 const POPUP_DISMISSED_KEY = 'newsletter-popup-dismissed';
 const POPUP_DELAY_MS = 5000; // 5 seconds (reduced for testing)
 const SCROLL_THRESHOLD = 0.3; // Show after 30% scroll (reduced for testing)
@@ -17,8 +40,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
   
   // #region agent log - State changes
   useEffect(() => {
-    console.log('[NewsletterPopup] State changed:', { isVisible, isDismissed });
-    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:15',message:'State changed',data:{isVisible,isDismissed},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
+    debugLog('NewsletterPopup.tsx:42', 'State changed', { isVisible, isDismissed }, 'G');
   }, [isVisible, isDismissed]);
   // #endregion
   const popupRef = useRef<HTMLDivElement>(null);
@@ -29,8 +51,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
 
   // #region agent log - Component mount
   useEffect(() => {
-    console.log('[NewsletterPopup] Component mounted');
-    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:14',message:'Component mounted',data:{timestamp:Date.now()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+    debugLog('NewsletterPopup.tsx:54', 'Component mounted', { timestamp: Date.now() }, 'A');
   }, []);
   // #endregion
 
@@ -39,28 +60,24 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
     // #region agent log - localStorage check
     try {
       const dismissed = localStorage.getItem(POPUP_DISMISSED_KEY);
-      console.log('[NewsletterPopup] localStorage check:', { dismissed, key: POPUP_DISMISSED_KEY });
-      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:26',message:'localStorage check',data:{dismissed,key:POPUP_DISMISSED_KEY},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+      debugLog('NewsletterPopup.tsx:64', 'localStorage check', { dismissed, key: POPUP_DISMISSED_KEY }, 'B');
       if (dismissed === 'true') {
-        console.log('[NewsletterPopup] Popup was previously dismissed, setting isDismissed=true');
-        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:28',message:'Popup dismissed in localStorage',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+        debugLog('NewsletterPopup.tsx:67', 'Popup dismissed in localStorage', {}, 'B');
         setIsDismissed(true);
         return;
       }
     } catch (error) {
       // localStorage not available (private browsing, etc.)
       console.warn('localStorage not available:', error);
-      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:32',message:'localStorage error',data:{error:error instanceof Error ? error.message : String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+      debugLog('NewsletterPopup.tsx:73', 'localStorage error', { error: error instanceof Error ? error.message : String(error) }, 'B');
     }
     // #endregion
 
     // Exit intent detection
     const handleMouseLeave = (e: MouseEvent) => {
-      console.log('[NewsletterPopup] Mouse leave event:', { clientY: e.clientY, isDismissed, isVisible });
-      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:37',message:'Mouse leave event',data:{clientY:e.clientY,isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+      debugLog('NewsletterPopup.tsx:81', 'Mouse leave event', { clientY: e.clientY, isDismissed, isVisible }, 'C');
       if (e.clientY <= 0 && !isDismissed && !isVisible) {
-        console.log('[NewsletterPopup] Exit intent detected, setting isVisible=true');
-        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:39',message:'Exit intent triggered',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+        debugLog('NewsletterPopup.tsx:84', 'Exit intent triggered', {}, 'C');
         setIsVisible(true);
       }
     };
@@ -72,25 +89,20 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       const windowHeight = window.innerHeight;
       const scrollY = window.scrollY;
       const scrollPercent = scrollHeight > windowHeight ? scrollY / (scrollHeight - windowHeight) : 0;
-      console.log('[NewsletterPopup] Scroll event:', { scrollPercent, threshold: SCROLL_THRESHOLD, isDismissed, isVisible });
-      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:44',message:'Scroll event',data:{scrollPercent,threshold:SCROLL_THRESHOLD,isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+      debugLog('NewsletterPopup.tsx:92', 'Scroll event', { scrollPercent, threshold: SCROLL_THRESHOLD, isDismissed, isVisible }, 'D');
       if (scrollPercent >= SCROLL_THRESHOLD && !isDismissed && !isVisible) {
-        console.log('[NewsletterPopup] Scroll threshold reached, setting isVisible=true');
-        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:50',message:'Scroll threshold triggered',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        debugLog('NewsletterPopup.tsx:100', 'Scroll threshold triggered', {}, 'D');
         hasScrolledRef.current = true;
         setIsVisible(true);
       }
     };
 
     // Time-based trigger (fallback)
-    console.log('[NewsletterPopup] Setting timer for', POPUP_DELAY_MS, 'ms');
-    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:56',message:'Timer set',data:{delayMs:POPUP_DELAY_MS,isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+    debugLog('NewsletterPopup.tsx:108', 'Timer set', { delayMs: POPUP_DELAY_MS, isDismissed, isVisible }, 'E');
     const timer = setTimeout(() => {
-      console.log('[NewsletterPopup] Timer fired:', { isDismissed, isVisible });
-      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:57',message:'Timer fired',data:{isDismissed,isVisible},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      debugLog('NewsletterPopup.tsx:111', 'Timer fired', { isDismissed, isVisible }, 'E');
       if (!isDismissed && !isVisible) {
-        console.log('[NewsletterPopup] Timer triggered, setting isVisible=true');
-        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:59',message:'Timer triggered',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+        debugLog('NewsletterPopup.tsx:114', 'Timer triggered', {}, 'E');
         setIsVisible(true);
       }
     }, POPUP_DELAY_MS);
@@ -106,10 +118,8 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
   }, [isDismissed, isVisible]);
 
   const handleClose = useCallback((savePreference: boolean = false) => {
-    console.log('[NewsletterPopup] handleClose called:', { savePreference });
-    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:101',message:'handleClose called',data:{savePreference},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
+    debugLog('NewsletterPopup.tsx:131', 'handleClose called', { savePreference }, 'H');
     if (!popupRef.current || !overlayRef.current) {
-      console.log('[NewsletterPopup] handleClose early return - refs missing');
       return;
     }
 
@@ -122,8 +132,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       duration: 0.3,
       ease: 'power2.in',
       onComplete: () => {
-        console.log('[NewsletterPopup] Animation complete, setting isDismissed=true');
-        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:115',message:'Setting isDismissed=true in handleClose',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
+        debugLog('NewsletterPopup.tsx:147', 'Setting isDismissed=true in handleClose', {}, 'H');
         setIsVisible(false);
         setIsDismissed(true);
 
@@ -205,20 +214,17 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
     
     // Use a small timeout to ensure DOM is ready
     const timeoutId = setTimeout(() => {
-      console.log('[NewsletterPopup] Animation useEffect running:', { isVisible, hasPopupRef: !!popupRef.current, hasOverlayRef: !!overlayRef.current });
-      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:203',message:'Animation useEffect running',data:{isVisible,hasPopupRef:!!popupRef.current,hasOverlayRef:!!overlayRef.current},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+      debugLog('NewsletterPopup.tsx:229', 'Animation useEffect running', { isVisible, hasPopupRef: !!popupRef.current, hasOverlayRef: !!overlayRef.current }, 'J');
       
       if (!popupRef.current || !overlayRef.current) {
-        console.log('[NewsletterPopup] Animation useEffect early return - refs not ready');
-        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:206',message:'Animation early return - refs missing',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+        debugLog('NewsletterPopup.tsx:232', 'Animation early return - refs missing', {}, 'J');
         return;
       }
 
       const popup = popupRef.current;
       const overlay = overlayRef.current;
 
-      console.log('[NewsletterPopup] Starting GSAP animation');
-      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:212',message:'Starting GSAP animation',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+      debugLog('NewsletterPopup.tsx:240', 'Starting GSAP animation', {}, 'J');
 
       // Set initial state - only animate scale and y, not opacity (CSS handles opacity)
       gsap.set(popup, {
@@ -234,8 +240,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
         ease: 'power3.out',
         delay: 0.1,
         onComplete: () => {
-          console.log('[NewsletterPopup] GSAP animation complete');
-          fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:233',message:'GSAP animation complete',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+          debugLog('NewsletterPopup.tsx:257', 'GSAP animation complete', {}, 'J');
         },
       });
     }, 10);
@@ -246,13 +251,11 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
 
   // #region agent log - Render check
   useEffect(() => {
-    console.log('[NewsletterPopup] Render check:', { isDismissed, isVisible, willRender: !(isDismissed || !isVisible) });
-    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:195',message:'Render check',data:{isDismissed,isVisible,willRender:!(isDismissed || !isVisible)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
+    debugLog('NewsletterPopup.tsx:270', 'Render check', { isDismissed, isVisible, willRender: !(isDismissed || !isVisible) }, 'F');
   }, [isDismissed, isVisible]);
   // #endregion
 
   if (isDismissed || !isVisible) {
-    console.log('[NewsletterPopup] Returning null:', { isDismissed, isVisible });
     return null;
   }
 
@@ -264,8 +267,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50"
         style={{ opacity: 1 }}
         onClick={(e) => {
-          console.log('[NewsletterPopup] Overlay clicked');
-          fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:225',message:'Overlay clicked',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'I'})}).catch(()=>{});
+          debugLog('NewsletterPopup.tsx:289', 'Overlay clicked', {}, 'I');
           handleClose(false);
         }}
         aria-hidden="true"
