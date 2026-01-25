@@ -5,6 +5,6 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Netlify's Next.js runtime handles the .next directory automatically
+# Netlify's Next.js plugin handles routing and serverless functions automatically
 [[plugins]]
   package = "@netlify/plugin-nextjs"
