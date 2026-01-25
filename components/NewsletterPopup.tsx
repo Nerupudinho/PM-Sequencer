@@ -201,36 +201,57 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
 
   // Animate popup entrance
   useEffect(() => {
-    if (!isVisible || !popupRef.current || !overlayRef.current) return;
+    if (!isVisible) return;
+    
+    // Use a small timeout to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      console.log('[NewsletterPopup] Animation useEffect running:', { isVisible, hasPopupRef: !!popupRef.current, hasOverlayRef: !!overlayRef.current });
+      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:203',message:'Animation useEffect running',data:{isVisible,hasPopupRef:!!popupRef.current,hasOverlayRef:!!overlayRef.current},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+      
+      if (!popupRef.current || !overlayRef.current) {
+        console.log('[NewsletterPopup] Animation useEffect early return - refs not ready');
+        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:206',message:'Animation early return - refs missing',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+        return;
+      }
 
-    const popup = popupRef.current;
-    const overlay = overlayRef.current;
+      const popup = popupRef.current;
+      const overlay = overlayRef.current;
 
-    // Set initial state
-    gsap.set(popup, {
-      opacity: 0,
-      scale: 0.9,
-      y: 20,
-    });
-    gsap.set(overlay, {
-      opacity: 0,
-    });
+      console.log('[NewsletterPopup] Starting GSAP animation');
+      fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:212',message:'Starting GSAP animation',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
 
-    // Animate in
-    gsap.to(overlay, {
-      opacity: 1,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
+      // Set initial state
+      gsap.set(popup, {
+        opacity: 0,
+        scale: 0.9,
+        y: 20,
+      });
+      gsap.set(overlay, {
+        opacity: 0,
+      });
 
-    gsap.to(popup, {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      duration: 0.5,
-      ease: 'power3.out',
-      delay: 0.1,
-    });
+      // Animate in
+      gsap.to(overlay, {
+        opacity: 1,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+
+      gsap.to(popup, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        delay: 0.1,
+        onComplete: () => {
+          console.log('[NewsletterPopup] GSAP animation complete');
+          fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:233',message:'GSAP animation complete',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'J'})}).catch(()=>{});
+        },
+      });
+    }, 10);
+
+    return () => clearTimeout(timeoutId);
   }, [isVisible]);
 
 
