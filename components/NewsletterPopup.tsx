@@ -14,6 +14,13 @@ interface NewsletterPopupProps {
 export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
+  
+  // #region agent log - State changes
+  useEffect(() => {
+    console.log('[NewsletterPopup] State changed:', { isVisible, isDismissed });
+    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:15',message:'State changed',data:{isVisible,isDismissed},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
+  }, [isVisible, isDismissed]);
+  // #endregion
   const popupRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -99,7 +106,12 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
   }, [isDismissed, isVisible]);
 
   const handleClose = useCallback((savePreference: boolean = false) => {
-    if (!popupRef.current || !overlayRef.current) return;
+    console.log('[NewsletterPopup] handleClose called:', { savePreference });
+    fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:101',message:'handleClose called',data:{savePreference},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
+    if (!popupRef.current || !overlayRef.current) {
+      console.log('[NewsletterPopup] handleClose early return - refs missing');
+      return;
+    }
 
     const popup = popupRef.current;
     const overlay = overlayRef.current;
@@ -110,6 +122,8 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       duration: 0.3,
       ease: 'power2.in',
       onComplete: () => {
+        console.log('[NewsletterPopup] Animation complete, setting isDismissed=true');
+        fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:115',message:'Setting isDismissed=true in handleClose',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'H'})}).catch(()=>{});
         setIsVisible(false);
         setIsDismissed(true);
 
@@ -238,7 +252,11 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       <div
         ref={overlayRef}
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50"
-        onClick={() => handleClose(false)}
+        onClick={(e) => {
+          console.log('[NewsletterPopup] Overlay clicked');
+          fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:225',message:'Overlay clicked',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'I'})}).catch(()=>{});
+          handleClose(false);
+        }}
         aria-hidden="true"
       />
 
