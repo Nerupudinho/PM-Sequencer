@@ -272,7 +272,8 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       {/* Overlay - softer opacity */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50"
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 opacity-100"
+        style={{ opacity: 1 }}
         onClick={(e) => {
           console.log('[NewsletterPopup] Overlay clicked');
           fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'NewsletterPopup.tsx:225',message:'Overlay clicked',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'I'})}).catch(()=>{});
@@ -284,7 +285,8 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       {/* Popup */}
       <div
         ref={popupRef}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none opacity-100"
+        style={{ opacity: 1 }}
       >
         <div
           ref={modalRef}
