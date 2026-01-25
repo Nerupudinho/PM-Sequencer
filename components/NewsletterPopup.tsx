@@ -275,7 +275,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       <div
         ref={popupRef}
         className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
-        style={{ opacity: 1 }}
+        style={{ opacity: 1, display: 'flex' }}
       >
         <div
           ref={modalRef}
@@ -283,6 +283,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
           aria-modal="true"
           aria-labelledby="newsletter-heading"
           className="bg-white rounded-2xl shadow-xl max-w-lg w-full pointer-events-auto relative"
+          style={{ opacity: 1, visibility: 'visible' }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close button - larger and higher contrast */}
