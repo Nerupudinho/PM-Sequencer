@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 
 const POPUP_DISMISSED_KEY = 'newsletter-popup-dismissed';
-const POPUP_DELAY_MS = 30000; // 30 seconds
-const SCROLL_THRESHOLD = 0.5; // Show after 50% scroll
+const POPUP_DELAY_MS = 5000; // 5 seconds (reduced for testing)
+const SCROLL_THRESHOLD = 0.3; // Show after 30% scroll (reduced for testing)
 
 interface NewsletterPopupProps {
   substackUrl?: string;
