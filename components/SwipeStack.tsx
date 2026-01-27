@@ -105,7 +105,7 @@ export default function SwipeStack({ problems, onProblemSelected }: SwipeStackPr
   // #endregion
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
       {/* Instructions */}
       <div className="text-center mb-8 max-w-md">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">

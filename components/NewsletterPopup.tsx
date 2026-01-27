@@ -1,0 +1,345 @@
+'use client';
+
+import { useEffect, useRef, useState, useCallback } from 'react';
+import gsap from 'gsap';
+
+// Debug logging helper - only logs in development
+const DEBUG_ENABLED = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const DEBUG_ENDPOINT = 'http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22';
+
+const debugLog = (location: string, message: string, data: any, hypothesisId: string) => {
+  if (!DEBUG_ENABLED) return;
+  
+  console.log(`[NewsletterPopup] ${message}`, data);
+  fetch(DEBUG_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      location,
+      message,
+      data,
+      timestamp: Date.now(),
+      sessionId: 'debug-session',
+      runId: 'run1',
+      hypothesisId
+    })
+  }).catch(() => {}); // Silently fail in production
+};
+
+const POPUP_DISMISSED_KEY = 'newsletter-popup-dismissed';
+const POPUP_DELAY_MS = 5000; // 5 seconds (reduced for testing)
+const SCROLL_THRESHOLD = 0.3; // Show after 30% scroll (reduced for testing)
+
+interface NewsletterPopupProps {
+  substackUrl?: string;
+}
+
+export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isDismissed, setIsDismissed] = useState(false);
+  
+  // #region agent log - State changes
+  useEffect(() => {
+    debugLog('NewsletterPopup.tsx:42', 'State changed', { isVisible, isDismissed }, 'G');
+  }, [isVisible, isDismissed]);
+  // #endregion
+  const popupRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const hasScrolledRef = useRef(false);
+
+  // #region agent log - Component mount
+  useEffect(() => {
+    debugLog('NewsletterPopup.tsx:54', 'Component mounted', { timestamp: Date.now() }, 'A');
+  }, []);
+  // #endregion
+
+  // Check if popup was previously dismissed
+  useEffect(() => {
+    // #region agent log - localStorage check
+    try {
+      const dismissed = localStorage.getItem(POPUP_DISMISSED_KEY);
+      debugLog('NewsletterPopup.tsx:64', 'localStorage check', { dismissed, key: POPUP_DISMISSED_KEY }, 'B');
+      if (dismissed === 'true') {
+        debugLog('NewsletterPopup.tsx:67', 'Popup dismissed in localStorage', {}, 'B');
+        setIsDismissed(true);
+        return;
+      }
+    } catch (error) {
+      // localStorage not available (private browsing, etc.)
+      console.warn('localStorage not available:', error);
+      debugLog('NewsletterPopup.tsx:73', 'localStorage error', { error: error instanceof Error ? error.message : String(error) }, 'B');
+    }
+    // #endregion
+
+    // Exit intent detection
+    const handleMouseLeave = (e: MouseEvent) => {
+      debugLog('NewsletterPopup.tsx:81', 'Mouse leave event', { clientY: e.clientY, isDismissed, isVisible }, 'C');
+      if (e.clientY <= 0 && !isDismissed && !isVisible) {
+        debugLog('NewsletterPopup.tsx:84', 'Exit intent triggered', {}, 'C');
+        setIsVisible(true);
+      }
+    };
+
+    // Scroll-based trigger
+    const handleScroll = () => {
+      if (hasScrolledRef.current) return;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const windowHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+      const scrollPercent = scrollHeight > windowHeight ? scrollY / (scrollHeight - windowHeight) : 0;
+      debugLog('NewsletterPopup.tsx:92', 'Scroll event', { scrollPercent, threshold: SCROLL_THRESHOLD, isDismissed, isVisible }, 'D');
+      if (scrollPercent >= SCROLL_THRESHOLD && !isDismissed && !isVisible) {
+        debugLog('NewsletterPopup.tsx:100', 'Scroll threshold triggered', {}, 'D');
+        hasScrolledRef.current = true;
+        setIsVisible(true);
+      }
+    };
+
+    // Time-based trigger (fallback)
+    debugLog('NewsletterPopup.tsx:108', 'Timer set', { delayMs: POPUP_DELAY_MS, isDismissed, isVisible }, 'E');
+    const timer = setTimeout(() => {
+      debugLog('NewsletterPopup.tsx:111', 'Timer fired', { isDismissed, isVisible }, 'E');
+      if (!isDismissed && !isVisible) {
+        debugLog('NewsletterPopup.tsx:114', 'Timer triggered', {}, 'E');
+        setIsVisible(true);
+      }
+    }, POPUP_DELAY_MS);
+
+    document.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isDismissed, isVisible]);
+
+  const handleClose = useCallback((savePreference: boolean = false) => {
+    debugLog('NewsletterPopup.tsx:131', 'handleClose called', { savePreference }, 'H');
+    if (!popupRef.current || !overlayRef.current) {
+      return;
+    }
+
+    const popup = popupRef.current;
+    const overlay = overlayRef.current;
+
+    // Animate out
+    gsap.to([popup, overlay], {
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.in',
+      onComplete: () => {
+        debugLog('NewsletterPopup.tsx:147', 'Setting isDismissed=true in handleClose', {}, 'H');
+        setIsVisible(false);
+        setIsDismissed(true);
+
+        if (savePreference) {
+          try {
+            localStorage.setItem(POPUP_DISMISSED_KEY, 'true');
+          } catch (error) {
+            console.warn('Failed to save preference:', error);
+          }
+        }
+
+        // Return focus to previous element
+        if (previousFocusRef.current) {
+          previousFocusRef.current.focus();
+        }
+      },
+    });
+  }, []);
+
+  // Keyboard support (ESC key)
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isVisible, handleClose]);
+
+  // Focus management
+  useEffect(() => {
+    if (!isVisible || !modalRef.current) return;
+
+    // Store previous focus
+    previousFocusRef.current = document.activeElement as HTMLElement;
+
+    // Move focus to modal
+    const firstFocusable = modalRef.current.querySelector(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    ) as HTMLElement;
+    if (firstFocusable) {
+      firstFocusable.focus();
+    }
+
+    // Focus trap
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !modalRef.current) return;
+
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTab);
+    return () => document.removeEventListener('keydown', handleTab);
+  }, [isVisible]);
+
+  // Animate popup entrance
+  useEffect(() => {
+    if (!isVisible) return;
+    
+    // Use a small timeout to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      debugLog('NewsletterPopup.tsx:229', 'Animation useEffect running', { isVisible, hasPopupRef: !!popupRef.current, hasOverlayRef: !!overlayRef.current }, 'J');
+      
+      if (!popupRef.current || !overlayRef.current) {
+        debugLog('NewsletterPopup.tsx:232', 'Animation early return - refs missing', {}, 'J');
+        return;
+      }
+
+      const popup = popupRef.current;
+      const overlay = overlayRef.current;
+
+      debugLog('NewsletterPopup.tsx:240', 'Starting GSAP animation', {}, 'J');
+
+      // Set initial state - only animate scale and y, not opacity (CSS handles opacity)
+      gsap.set(popup, {
+        scale: 0.9,
+        y: 20,
+      });
+
+      // Animate in - opacity is handled by CSS, GSAP only animates transform
+      gsap.to(popup, {
+        scale: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        delay: 0.1,
+        onComplete: () => {
+          debugLog('NewsletterPopup.tsx:257', 'GSAP animation complete', {}, 'J');
+        },
+      });
+    }, 10);
+
+    return () => clearTimeout(timeoutId);
+  }, [isVisible]);
+
+
+  // #region agent log - Render check
+  useEffect(() => {
+    debugLog('NewsletterPopup.tsx:270', 'Render check', { isDismissed, isVisible, willRender: !(isDismissed || !isVisible) }, 'F');
+  }, [isDismissed, isVisible]);
+  // #endregion
+
+  if (isDismissed || !isVisible) {
+    return null;
+  }
+
+  return (
+    <>
+      {/* Overlay - softer opacity */}
+      <div
+        ref={overlayRef}
+        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50"
+        style={{ opacity: 1 }}
+        onClick={(e) => {
+          debugLog('NewsletterPopup.tsx:289', 'Overlay clicked', {}, 'I');
+          handleClose(false);
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Popup */}
+      <div
+        ref={popupRef}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+        style={{ opacity: 1, display: 'flex' }}
+      >
+        <div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="newsletter-heading"
+          className="bg-white rounded-2xl shadow-xl max-w-lg w-full pointer-events-auto relative"
+          style={{ opacity: 1, visibility: 'visible' }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close button - larger and higher contrast */}
+          <button
+            onClick={() => handleClose(false)}
+            className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 transition-colors p-2 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 rounded"
+            aria-label="Close newsletter popup"
+          >
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          {/* Content */}
+          <div className="p-6 sm:p-8">
+            {/* Heading */}
+            <h2 id="newsletter-heading" className="text-3xl font-bold text-slate-900 mb-6">
+              Want to build something like this?
+            </h2>
+
+            {/* Substack embed iframe */}
+            <div className="mb-6">
+              <iframe 
+                src="https://sreesaiganesh.substack.com/embed" 
+                width="100%" 
+                height="320" 
+                style={{border: '1px solid #EEE', background: 'white'}} 
+                frameBorder="0" 
+                scrolling="no"
+              />
+            </div>
+
+            {/* No thanks button */}
+            <div className="mt-6 flex justify-center items-center gap-4">
+              <button
+                onClick={() => handleClose(false)}
+                className="px-6 py-2 text-base font-medium text-slate-700 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 rounded-lg transition-colors"
+              >
+                No thanks
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
