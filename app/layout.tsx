@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Libre_Bodoni, Libre_Franklin } from "next/font/google";
 import "./globals.css";
 import Analytics from "@/components/Analytics";
 import { Providers } from "@/components/Providers";
@@ -14,9 +14,25 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const libreBodoni = Libre_Bodoni({
+  variable: "--font-libre-bodoni",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const libreFranklin = Libre_Franklin({
+  variable: "--font-libre-franklin",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
-  title: "PM Sequence - Learn something new in the next 60 minutes",
-  description: "For mid–senior PMs (3–10 yrs). No browsing. No decision fatigue. Just watch, learn, and apply it Monday morning.",
+  title: "Product Monk - Level up your PM stack with AI",
+  description: "Level up your PM stack with AI in 60 minutes. For mid–senior PMs (3–10 yrs). No browsing. No decision fatigue. Just watch, learn, and apply it Monday morning.",
+  icons: {
+    icon: "/product-monk-logo.png",
+    apple: "/product-monk-logo.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -31,9 +47,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="bg-white">
+    <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-slate-900`}
+        className={`${geistSans.variable} ${geistMono.variable} ${libreBodoni.variable} ${libreFranklin.variable} antialiased`}
       >
         <Providers>
           {children}

@@ -259,8 +259,8 @@ export default function SwipeCard({
 
         {/* Discomfort Section */}
         <div className="mb-6">
-          <div className="text-sm font-semibold text-red-600 mb-2">
-            The Discomfort
+          <div className="text-sm font-semibold text-black mb-2">
+            Do you relate to this?
           </div>
           <p className="text-gray-700 text-base leading-relaxed">
             {problem.discomfort}
@@ -270,7 +270,7 @@ export default function SwipeCard({
         {/* Promise Section */}
         <div>
           <div className="text-sm font-semibold text-green-600 mb-2">
-            What You&apos;ll Learn
+            Swipe right to learn
           </div>
           <p className="text-gray-700 text-base leading-relaxed">
             {problem.promise}
