@@ -1,6 +1,6 @@
 # Go Live Checklist - PM Sequence GSAP
 
-**Production URL**: `https://pm-monk.netlify.app`
+**Production URL**: `[YOUR_NETLIFY_URL]`
 
 ---
 
@@ -9,7 +9,7 @@
 - [x] Open terminal
 - [x] Run: `openssl rand -base64 32`
 - [x] Copy the generated secret (you'll need it in Step 3)
-- [x] Generated secret: `GgciqPBGARsXPAR0zTJGd8i0a2lwH0Jrm6xBYC0jgaQ=`
+- [x] Generated secret: `[SECRET_REMOVED]`
 
 ---
 
@@ -37,11 +37,11 @@
 
 **Variable 2:**
 - [x] Name: `NEXTAUTH_URL` ✅
-- [x] Value: `https://pm-monk.netlify.app` ✅
+- [x] Value: `[YOUR_NETLIFY_URL]` ✅
 
 **Variable 3:**
 - [x] Name: `NEXTAUTH_URL_INTERNAL` ✅
-- [x] Value: `https://pm-monk.netlify.app` ✅
+- [x] Value: `[YOUR_NETLIFY_URL]` ✅
 
 **Variable 4:**
 - [x] Name: `NEXTAUTH_SECRET` ✅

@@ -8,9 +8,9 @@
 ## Before You Start (5 minutes)
 
 ### Step 1: Get Your Production URLs
-- **Your Netlify site URL**: `https://pm-monk.netlify.app`
+- **Your Netlify site URL**: `[YOUR_NETLIFY_URL]`
 - **Your Supabase connection string**: 
-  - **Pooler URL (port 6543)**: `postgresql://postgres.npktknoqdivjlwpgjvtb:Monisha%40123@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
+  - **Pooler URL (port 6543)**: Get from Supabase Dashboard → Settings → Database → Connection Pooling
   - **Note**: Password `Monisha@123` is URL-encoded as `Monisha%40123` (the `@` becomes `%40`)
   - **IMPORTANT**: Use this pooler URL (port 6543), NOT direct connection (port 5432)
 
@@ -32,9 +32,9 @@ Copy the result (you'll need it for `NEXTAUTH_SECRET`).
 
 | Variable Name | Value | Where to Get |
 |--------------|-------|--------------|
-| `DATABASE_URL` | `postgresql://postgres.npktknoqdivjlwpgjvtb:Monisha%40123@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres` | Pooler URL (port 6543) - password URL-encoded |
-| `NEXTAUTH_URL` | `https://pm-monk.netlify.app` | Your production Netlify URL |
-| `NEXTAUTH_URL_INTERNAL` | `https://pm-monk.netlify.app` | Same as NEXTAUTH_URL |
+| `DATABASE_URL` | `[Get from Supabase Dashboard - Connection Pooling]` | Pooler URL (port 6543) - password URL-encoded |
+| `NEXTAUTH_URL` | `[YOUR_NETLIFY_URL]` | Your production Netlify URL |
+| `NEXTAUTH_URL_INTERNAL` | `[YOUR_NETLIFY_URL]` | Same as NEXTAUTH_URL |
 | `NEXTAUTH_SECRET` | `yCuJlP7wjuFh/TERh01K6hTAX7uTnkANPRlKKdKaKAs=` | Terminal: `openssl rand -base64 32` |
 | `GOOGLE_CLIENT_ID` | From Google Cloud Console | Google Cloud → APIs & Services → Credentials → Your OAuth Client |
 | `GOOGLE_CLIENT_SECRET` | From Google Cloud Console | Same as above (OAuth Client) |
@@ -49,11 +49,11 @@ Copy the result (you'll need it for `NEXTAUTH_SECRET`).
 2. APIs & Services → Credentials → Your OAuth Client (the one you're using)
 3. **Authorized JavaScript origins**: 
    - Click "Add URI"
-   - Add: `https://pm-monk.netlify.app`
+   - Add: `[YOUR_NETLIFY_URL]`
    - **Remove** all localhost, ngrok, and cloudflare tunnel URLs
 4. **Authorized redirect URIs**:
    - Click "Add URI"
-   - Add: `https://pm-monk.netlify.app/api/auth/callback/google`
+   - Add: `[YOUR_NETLIFY_URL]/api/auth/callback/google`
    - **Remove** all localhost, ngrok, and cloudflare tunnel URLs
 5. **OAuth consent screen**:
    - Go to APIs & Services → OAuth consent screen
@@ -64,7 +64,7 @@ Copy the result (you'll need it for `NEXTAUTH_SECRET`).
 
 ## Part 3: Check Supabase (2 minutes)
 
-1. ✅ Pooler URL obtained: `postgresql://postgres.npktknoqdivjlwpgjvtb:Monisha%40123@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
+1. ✅ Pooler URL obtained: Get from Supabase Dashboard → Settings → Database → Connection Pooling
 2. **Use this pooler URL** in Netlify `DATABASE_URL` variable
    - **DO NOT** use the direct connection (port 5432) - it will break in production
    - **Note**: Password is URL-encoded (`Monisha@123` → `Monisha%40123`)
@@ -120,8 +120,8 @@ Copy the result (you'll need it for `NEXTAUTH_SECRET`).
 ### Common Issues
 
 **"Can't sign in" / "redirect_uri_mismatch"**
-- Google OAuth redirect URI must match EXACTLY: `https://pm-monk.netlify.app/api/auth/callback/google`
-- Check `NEXTAUTH_URL` in Netlify is set to `https://pm-monk.netlify.app` (no trailing slash)
+- Google OAuth redirect URI must match EXACTLY: `[YOUR_NETLIFY_URL]/api/auth/callback/google`
+- Check `NEXTAUTH_URL` in Netlify is set to `[YOUR_NETLIFY_URL]` (no trailing slash)
 - Verify Google OAuth consent screen is "In production" (not "Testing")
 
 **"Database error" / "Can't reach database"**

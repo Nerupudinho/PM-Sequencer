@@ -22,7 +22,7 @@ Open `.env.local` in your editor and copy the values.
 ## 1. DATABASE_URL (Supabase Pooler URL)
 
 **✅ Pooler URL obtained:**
-- `postgresql://postgres.npktknoqdivjlwpgjvtb:Monisha%40123@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
+- Get from Supabase Dashboard → Settings → Database → Connection Pooling
 - **Note**: Password `Monisha@123` is URL-encoded as `Monisha%40123` (the `@` becomes `%40`)
 
 **⚠️ IMPORTANT**: Use this **Connection Pooler URL** (port 6543), NOT the direct connection (port 5432).
@@ -63,9 +63,9 @@ Open `.env.local` in your editor and copy the values.
 
 Once you have all values, add them to Netlify:
 
-- [ ] `DATABASE_URL` = `postgresql://postgres.npktknoqdivjlwpgjvtb:Monisha%40123@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
-- [ ] `NEXTAUTH_URL` = `https://pm-monk.netlify.app`
-- [ ] `NEXTAUTH_URL_INTERNAL` = `https://pm-monk.netlify.app`
+- [ ] `DATABASE_URL` = `[Get from Supabase Dashboard - Connection Pooling]`
+- [ ] `NEXTAUTH_URL` = `[YOUR_NETLIFY_URL]`
+- [ ] `NEXTAUTH_URL_INTERNAL` = `[YOUR_NETLIFY_URL]`
 - [ ] `NEXTAUTH_SECRET` = `yCuJlP7wjuFh/TERh01K6hTAX7uTnkANPRlKKdKaKAs=`
 - [ ] `GOOGLE_CLIENT_ID` = (from Google Cloud Console)
 - [ ] `GOOGLE_CLIENT_SECRET` = (from Google Cloud Console)

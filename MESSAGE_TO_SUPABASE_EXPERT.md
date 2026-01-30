@@ -13,8 +13,8 @@ Hi! I have a connection string for my Supabase project but need a different one 
 - Connection Pooler URL (port 6543) for Netlify production deployment
 
 **Update - Got it!**
-- Pooler URL: `postgresql://postgres.npktknoqdivjlwpgjvtb:Monisha%40123@aws-1-ap-southeast-2.pooler.supabase.com:6543/postgres`
-- Note: Password `Monisha@123` is URL-encoded as `Monisha%40123` (the `@` becomes `%40`)
+- Pooler URL: `[Get from Supabase Dashboard - Connection Pooling]`
+- Note: URL-encode special characters in password (e.g., `@` becomes `%40`)
 
 Thanks for the help!
 
