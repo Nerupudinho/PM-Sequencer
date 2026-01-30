@@ -30,12 +30,13 @@ export default function SwipeStack({ problems, onProblemSelected }: SwipeStackPr
   const [remainingProblems, setRemainingProblems] = useState<Problem[]>(problems);
   const [hasAnimated, setHasAnimated] = useState(false);
   const stackContainerRef = useRef<HTMLDivElement>(null);
-  const frontCardRef = useRef<HTMLDivElement>(null);
   
   // #region agent log
   try {
     fetch('http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'SwipeStack.tsx:25',message:'SwipeStack state initialized',data:{remainingProblemsCount:remainingProblems?.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-  } catch(e) {}
+  } catch {
+    // Ignore fetch errors
+  }
   // #endregion
 
   // Animate cards on initial load
@@ -75,7 +76,9 @@ export default function SwipeStack({ problems, onProblemSelected }: SwipeStackPr
 
     // Get the front card element and trigger its swipe method
     const frontCard = stackContainerRef.current?.querySelector('.swipe-card-container > div');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (frontCard && (frontCard as any).triggerSwipe) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (frontCard as any).triggerSwipe('left');
     }
   };
@@ -85,7 +88,9 @@ export default function SwipeStack({ problems, onProblemSelected }: SwipeStackPr
 
     // Get the front card element and trigger its swipe method
     const frontCard = stackContainerRef.current?.querySelector('.swipe-card-container > div');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (frontCard && (frontCard as any).triggerSwipe) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (frontCard as any).triggerSwipe('right');
     }
   };

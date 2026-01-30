@@ -102,7 +102,7 @@ export function SequenceIntro({
 
         <div className="border-2 border-slate-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-white space-y-3 sm:space-y-4">
           <h3 className="text-xs sm:text-sm font-semibold text-slate-900 uppercase tracking-wide mb-2">
-            What you'll watch
+            What you&apos;ll watch
           </h3>
           {sequence.videos.map((v, idx) => (
             <div key={v.videoId} className="flex gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-slate-100 last:border-0 last:pb-0">

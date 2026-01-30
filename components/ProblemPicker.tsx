@@ -19,7 +19,7 @@ export function ProblemPicker({
           What do you want to get better at this week?
         </h1>
         <p className="text-sm sm:text-base text-slate-600 max-w-lg mx-auto px-2">
-          You've already tried AI tools. Pick a question that's been on your mind — we'll walk through one focused, practical sequence (≈60 minutes).
+          You&apos;ve already tried AI tools. Pick a question that&apos;s been on your mind — we&apos;ll walk through one focused, practical sequence (≈60 minutes).
         </p>
       </header>
 

@@ -7,7 +7,7 @@ import gsap from 'gsap';
 const DEBUG_ENABLED = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 const DEBUG_ENDPOINT = 'http://127.0.0.1:7242/ingest/7d91f934-abb2-4e7e-b1bc-8e03f03a5c22';
 
-const debugLog = (location: string, message: string, data: any, hypothesisId: string) => {
+const debugLog = (location: string, message: string, data: Record<string, unknown>, hypothesisId: string) => {
   if (!DEBUG_ENABLED) return;
   
   console.log(`[NewsletterPopup] ${message}`, data);
@@ -34,7 +34,7 @@ interface NewsletterPopupProps {
   substackUrl?: string;
 }
 
-export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
+export default function NewsletterPopup({}: NewsletterPopupProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
   
@@ -63,7 +63,8 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
       debugLog('NewsletterPopup.tsx:64', 'localStorage check', { dismissed, key: POPUP_DISMISSED_KEY }, 'B');
       if (dismissed === 'true') {
         debugLog('NewsletterPopup.tsx:67', 'Popup dismissed in localStorage', {}, 'B');
-        setIsDismissed(true);
+        // Use setTimeout to avoid synchronous setState in effect
+        setTimeout(() => setIsDismissed(true), 0);
         return;
       }
     } catch (error) {
@@ -266,7 +267,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
         ref={overlayRef}
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50"
         style={{ opacity: 1 }}
-        onClick={(e) => {
+        onClick={() => {
           debugLog('NewsletterPopup.tsx:289', 'Overlay clicked', {}, 'I');
           handleClose(false);
         }}
@@ -286,7 +287,7 @@ export default function NewsletterPopup({ substackUrl }: NewsletterPopupProps) {
           aria-labelledby="newsletter-heading"
           className="bg-white rounded-2xl shadow-xl max-w-lg w-full pointer-events-auto relative"
           style={{ opacity: 1, visibility: 'visible' }}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(event) => event.stopPropagation()}
         >
           {/* Close button - larger and higher contrast */}
           <button

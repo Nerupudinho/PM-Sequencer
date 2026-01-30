@@ -9,7 +9,7 @@ try {
 }
 // #endregion
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 // #region agent log
 try {
@@ -28,13 +28,13 @@ try {
 import { 
   throwCard, 
   snapBack, 
-  shakeCard, 
   calculateRotation, 
   shouldCommitSwipe, 
   getSwipeDirection 
 } from '@/lib/swipeAnimations';
 
 // Draggable plugin reference
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let Draggable: any = null;
 
 interface Problem {
@@ -58,15 +58,15 @@ export default function SwipeCard({
   index,
   onSwipeRight,
   onSwipeLeft,
-  isLast,
-  totalCards
+  isLast
 }: SwipeCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const draggableRef = useRef<Draggable[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const draggableRef = useRef<any[]>([]);
   const isSwipingRef = useRef(false);
 
   // Calculate visual properties based on position in stack
-  const getStackStyle = () => {
+  const getStackStyle = useCallback(() => {
     const baseScale = 1 - (index * 0.05);
     const baseY = index * 20;
     const zIndex = 10 - index;
@@ -77,7 +77,7 @@ export default function SwipeCard({
       zIndex: zIndex,
       opacity: index < 4 ? 1 : 0, // Only show top 4 cards
     };
-  };
+  }, [index]);
 
   useEffect(() => {
     // #region agent log
@@ -119,7 +119,6 @@ export default function SwipeCard({
       
       if (!Draggable) {
         try {
-          // @ts-ignore - Case sensitivity issue: file is draggable.d.ts but imported as Draggable
           const draggableModule = await import('gsap/Draggable');
           Draggable = draggableModule.Draggable;
           if (Draggable) {
@@ -141,14 +140,14 @@ export default function SwipeCard({
       type: 'x,y',
       bounds: { minX: -window.innerWidth, maxX: window.innerWidth, minY: -100, maxY: 100 },
       inertia: true,
-      onDrag: function() {
+      onDrag: function(this: { x: number }) {
         if (isSwipingRef.current) return;
         
         // Apply rotation based on horizontal position
         const rotation = calculateRotation(this.x);
         gsap.set(card, { rotation });
       },
-      onDragEnd: function() {
+      onDragEnd: function(this: { x: number }) {
         if (isSwipingRef.current) return;
 
         const xPos = this.x;
@@ -196,7 +195,7 @@ export default function SwipeCard({
         draggableRef.current[0].kill();
       }
     };
-  }, [index, isLast, onSwipeRight, onSwipeLeft]);
+  }, [index, isLast, onSwipeRight, onSwipeLeft, getStackStyle]);
 
   // Update position when index changes (card moves up in stack)
   useEffect(() => {
@@ -212,7 +211,7 @@ export default function SwipeCard({
       duration: 0.4,
       ease: 'back.out(1.7)'
     });
-  }, [index]);
+  }, [index, getStackStyle]);
 
   // Trigger swipe from external button click
   const triggerSwipe = (direction: 'left' | 'right') => {
@@ -236,9 +235,10 @@ export default function SwipeCard({
   // Expose trigger method via ref (we'll handle this in SwipeStack)
   useEffect(() => {
     if (cardRef.current && index === 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (cardRef.current as any).triggerSwipe = triggerSwipe;
     }
-  }, [index, isLast]);
+  }, [index, isLast, triggerSwipe]);
 
   const stackStyle = getStackStyle();
 
@@ -270,7 +270,7 @@ export default function SwipeCard({
         {/* Promise Section */}
         <div>
           <div className="text-sm font-semibold text-green-600 mb-2">
-            What You'll Learn
+            What You&apos;ll Learn
           </div>
           <p className="text-gray-700 text-base leading-relaxed">
             {problem.promise}

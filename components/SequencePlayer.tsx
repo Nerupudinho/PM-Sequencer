@@ -124,7 +124,7 @@ export function SequencePlayer({
         <div className="space-y-1 sm:space-y-2">
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{sequence.title}</h1>
           <p className="text-xs sm:text-sm text-slate-600">{sequence.tagline}</p>
-          <p className="text-xs text-slate-500 italic">Watch this sequence. Apply it next week. That's it.</p>
+          <p className="text-xs text-slate-500 italic">Watch this sequence. Apply it next week. That&apos;s it.</p>
         </div>
 
         {/* Video player */}
