@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# deployment docs with secrets (moved to deployment-docs folder)
+*_DEPLOY*.md
+FIND_ENV*.md
+*SUPABASE*.md
+*POOLER*.md
+GO_LIVE*.md
